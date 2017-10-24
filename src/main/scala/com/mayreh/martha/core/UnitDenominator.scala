@@ -10,4 +10,8 @@ object UnitDenominator {
   case object Sixteenth extends UnitDenominator(16)
   case object ThirtySecond extends UnitDenominator(32)
   case object SixtyFourth extends UnitDenominator(64)
+
+  val values = Seq(Whole, Half, Quarter, Eighth, Sixteenth, ThirtySecond, SixtyFourth)
+
+  def valueOf(denominator: Int): Option[UnitDenominator] = values.find(_.denominator == denominator)
 }
