@@ -27,7 +27,7 @@ case class Chord(length: NoteLength, pitches: Seq[Pitch]) extends TupletMember w
 
 case class VoiceId(id: String) extends MusicalElement
 
-case class Tuplet(notes: Int, inTimeOf: Option[Int]) extends MusicalElement {
+case class Tuplet(notes: Int, inTimeOf: Option[Int], elements: Seq[TupletMember]) extends MusicalElement {
   val time: Int = inTimeOf.getOrElse {
     notes match {
       case 2 | 4 | 8 => 3
