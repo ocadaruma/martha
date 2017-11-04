@@ -2,7 +2,7 @@ package com.mayreh.martha.render.element
 
 import com.mayreh.martha.render.Size
 
-class FlagSixteenthElement(size: Size, inverted: Boolean = false) {
+class TailSixteenthElement(size: Size, inverted: Boolean = false) {
 
   val element: scala.xml.Elem = {
     val Size(w, height) = size
