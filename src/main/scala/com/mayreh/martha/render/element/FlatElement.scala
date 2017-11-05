@@ -1,12 +1,12 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.Size
+import com.mayreh.martha.render.{Rect, Size}
 
-class FlatElement(size: Size) {
+class FlatElement(frame: Rect) {
 
   val element: scala.xml.Elem = {
 
-    val Size(w, h) = size
+    val Size(w, h) = frame.size
 
       <path
       d ={s"""M ${ w * -0.005984375 } ${ h * 0.001425 }
@@ -24,6 +24,7 @@ class FlatElement(size: Size) {
              |L ${ w * -0.005984375 } ${ h * 0.001425 }""".stripMargin}
       stroke="transparent"
       fill="black"
+      transform={s"translate(${frame.x}, ${frame.y})"}
       />
   }
 }

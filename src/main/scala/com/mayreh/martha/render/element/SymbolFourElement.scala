@@ -1,11 +1,11 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.Size
+import com.mayreh.martha.render.{Rect, Size}
 
-class SymbolFourElement(size: Size) {
+class SymbolFourElement(frame: Rect) {
 
   val element: scala.xml.Elem = {
-    val Size(w, h) = size
+    val Size(w, h) = frame.size
 
       <path
       d={s"""M ${ w * 0.3742 } ${ h * 3.6E-4 }
@@ -31,6 +31,7 @@ class SymbolFourElement(size: Size) {
             |L ${ w * 0.3742 } ${ h * 3.6E-4 }""".stripMargin}
       stroke="transparent"
       fill="black"
+      transform={s"translate(${frame.x}, ${frame.y})"}
       />
   }
 }

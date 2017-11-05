@@ -1,11 +1,11 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.Size
+import com.mayreh.martha.render.{Rect, Size}
 
-class SymbolCElement(size: Size) {
+class SymbolCElement(frame: Rect) {
 
   val element: scala.xml.Elem = {
-    val Size(w, h) = size
+    val Size(w, h) = frame.size
 
       <path
       d={s"""M ${ w * 0.67568 } ${ h * 0.37398332 }
@@ -29,6 +29,7 @@ class SymbolCElement(size: Size) {
             |C ${ w * 0.67933 } ${ h * 0.287025 }, ${ w * 0.66708 } ${ h * 0.32425 }, ${ w * 0.67568 } ${ h * 0.37398332 }""".stripMargin}
       stroke="transparent"
       fill="black"
+      transform={s"translate(${frame.x}, ${frame.y})"}
       />
   }
 }

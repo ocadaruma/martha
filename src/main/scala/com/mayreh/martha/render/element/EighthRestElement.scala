@@ -1,11 +1,11 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.Size
+import com.mayreh.martha.render.{Rect, Size}
 
-class EighthRestElement(size: Size) {
+class EighthRestElement(frame: Rect) {
 
   val element: scala.xml.Elem = {
-    val Size(w, h) = size
+    val Size(w, h) = frame.size
 
       <path
       d={s"""M ${ w * 4.1E-4 } ${ h * 0.15148 }
@@ -23,6 +23,7 @@ class EighthRestElement(size: Size) {
             |C ${ w * 0.02972 } ${ h * 0.23224 }, ${ w * 4.1E-4 } ${ h * 0.20271334 }, ${ w * 4.1E-4 } ${ h * 0.15148 }""".stripMargin}
       stroke="transparent"
       fill="black"
+      transform={s"translate(${frame.x}, ${frame.y})"}
       />
   }
 }

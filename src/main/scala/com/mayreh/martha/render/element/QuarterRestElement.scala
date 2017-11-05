@@ -1,11 +1,11 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.Size
+import com.mayreh.martha.render.{Rect, Size}
 
-class QuarterRestElement(size: Size) {
+class QuarterRestElement(frame: Rect) {
 
   val element: scala.xml.Elem = {
-    val Size(w, h) = size
+    val Size(w, h) = frame.size
 
       <path
       d={s"""M ${ w * 0.12912 } ${ h * -4.0E-4 }
@@ -24,6 +24,7 @@ class QuarterRestElement(size: Size) {
             |L ${ w * 0.12912 } ${ h * -4.0E-4 }""".stripMargin}
       stroke="transparent"
       fill="black"
+      transform={s"translate(${frame.x}, ${frame.y})"}
       />
   }
 }

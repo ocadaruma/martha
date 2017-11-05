@@ -1,11 +1,11 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.Size
+import com.mayreh.martha.render.{Rect, Size}
 
-class TrebleClefElement(size: Size) {
+class TrebleClefElement(frame: Rect) {
 
   val element: scala.xml.Elem = {
-    val Size(width, height) = size
+    val Size(width, height) = frame.size
     val w = width / 150
     val h = height / 400
 
@@ -38,6 +38,7 @@ class TrebleClefElement(size: Size) {
             |C ${ w * 56.875 } ${ h * 244.692 }, ${ w * 62.945 } ${ h * 259.082 }, ${ w * 70.584 } ${ h * 265.615 }""".stripMargin}
       stroke="transparent"
       fill="black"
+      transform={s"translate(${frame.x}, ${frame.y})"}
       />
   }
 }

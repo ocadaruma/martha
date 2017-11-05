@@ -4,7 +4,7 @@ import com.mayreh.martha.render.calc.LinearExpr
 import com.mayreh.martha.render.{Point, Rect, Size}
 
 class BracketElement(
-  size: Size,
+  frame: Rect,
   notes: Int = 3,
   lineWidth: Float = 1,
   beamHeight: Float = 5,
@@ -13,7 +13,7 @@ class BracketElement(
   inverted: Boolean = false) {
 
   val element: scala.xml.Elem = {
-    val Size(w, h) = size
+    val Size(w, h) = frame.size
 
     val textRectSize = Size(fontSize, fontSize)
     val textRectOrigin = Point(
@@ -85,7 +85,7 @@ class BracketElement(
       </text>
 
     val g =
-      <g>
+      <g transform={s"translate(${frame.x}, ${frame.y})"}>
         {bracket}
         {text}
       </g>

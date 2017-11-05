@@ -1,11 +1,11 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.Size
+import com.mayreh.martha.render.{Rect, Size}
 
-class BlackNoteElement(size: Size) {
+class BlackNoteElement(frame: Rect) {
 
   val element: scala.xml.Elem = {
-    val Size(w, h) = size
+    val Size(w, h) = frame.size
 
       <path
       d={s"""M ${ w * 0.19589 } ${ h * 0.20055556 }
@@ -15,6 +15,7 @@ class BlackNoteElement(size: Size) {
             |C ${ w * 0.73179 } ${ h * -0.06628889 }, ${ w * 0.41698 } ${ h * -0.020088889 }, ${ w * 0.19589 } ${ h * 0.20055556 }""".stripMargin}
       stroke="transparent"
       fill="black"
+      transform={s"translate(${frame.x}, ${frame.y})"}
       />
   }
 }

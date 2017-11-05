@@ -1,12 +1,12 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.Size
+import com.mayreh.martha.render.{Rect, Size}
 
-class DoubleFlatElement(size: Size) {
+class DoubleFlatElement(frame: Rect) {
 
   val element: scala.xml.Elem = {
 
-    val Size(width, h) = size
+    val Size(width, h) = frame.size
     val w = width / 2
     val x = w
 
@@ -46,7 +46,8 @@ class DoubleFlatElement(size: Size) {
 
     val g =
       <g stroke="transparent"
-         fill="black">
+         fill="black"
+         transform={s"translate(${frame.x}, ${frame.y})"}>
         {path}
         {path2}
       </g>

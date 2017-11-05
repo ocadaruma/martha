@@ -1,11 +1,11 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.Size
+import com.mayreh.martha.render.{Rect, Size}
 
-class TailSixteenthElement(size: Size, inverted: Boolean = false) {
+class TailSixteenthElement(frame: Rect, inverted: Boolean = false) {
 
   val element: scala.xml.Elem = {
-    val Size(w, height) = size
+    val Size(w, height) = frame.size
     val h = height * 230 / 300
 
     val y = height * 70.0 / 300
@@ -38,7 +38,7 @@ class TailSixteenthElement(size: Size, inverted: Boolean = false) {
     val g =
       <g stroke="transparent"
          fill="black"
-         transform={if (inverted) s"translate(0, $height) scale(1, -1)" else "translate(0, 0) scale(1, 1)"}>
+         transform={if (inverted) s"translate(${frame.x}, ${frame.y + height}) scale(1, -1)" else s"translate(${frame.x}, ${frame.y}) scale(1, 1)"}>
         {path2}
         {path}
       </g>

@@ -1,11 +1,11 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.Size
+import com.mayreh.martha.render.{Rect, Size}
 
-class NaturalElement(size: Size) {
+class NaturalElement(frame: Rect) {
 
   val element: scala.xml.Elem = {
-    val Size(w, h) = size
+    val Size(w, h) = frame.size
 
       <path
       d={s"""M ${ w * 0.01334 } ${ h * -1.95E-4 }
@@ -23,6 +23,7 @@ class NaturalElement(size: Size) {
             |L ${ w * 0.01334 } ${ h * -1.95E-4 }""".stripMargin}
       stroke="transparent"
       fill="black"
+      transform={s"translate(${frame.x}, ${frame.y})"}
       />
   }
 }

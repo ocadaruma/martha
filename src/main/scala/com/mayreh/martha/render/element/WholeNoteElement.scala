@@ -1,11 +1,11 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.Size
+import com.mayreh.martha.render.{Rect, Size}
 
-class WholeNoteElement(size: Size) {
+class WholeNoteElement(frame: Rect) {
 
   val element: scala.xml.Elem = {
-    val Size(w, h) = size
+    val Size(w, h) = frame.size
 
       <path
       d={s"""M  0 ${ h / 2 } A ${ w / 2 } ${ h / 2 }, 0, 0, 0, ${w} ${ h / 2 }
@@ -18,6 +18,7 @@ class WholeNoteElement(size: Size) {
       stroke="transparent"
       fill="black"
       fill-rule="evenodd"
+      transform={s"translate(${frame.x}, ${frame.y})"}
       />
   }
 }

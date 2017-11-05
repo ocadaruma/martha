@@ -1,11 +1,11 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.Size
+import com.mayreh.martha.render.{Rect, Size}
 
-class TailEighthElement(size: Size, inverted: Boolean = false) {
+class TailEighthElement(frame: Rect, inverted: Boolean = false) {
 
   val element: scala.xml.Elem = {
-    val Size(w, h) = size
+    val Size(w, h) = frame.size
 
       <path
       d={s"""M ${w * 0.00157} ${h * 2.7E-4}
@@ -16,7 +16,7 @@ class TailEighthElement(size: Size, inverted: Boolean = false) {
             |C ${w * 0.87704} ${h * 0.5852567}, ${w * 0.85393} ${h * 0.45594665}, ${w * 0.0012} ${h * 0.36567333}""".stripMargin}
       stroke="transparent"
       fill="black"
-      transform={if (inverted) s"translate(0, $h) scale(1, -1)" else "translate(0, 0) scale(1, 1)"}
+      transform={if (inverted) s"translate(${frame.x}, ${frame.y + h}) scale(1, -1)" else s"translate(${frame.x}, ${frame.y}) scale(1, 1)"}
       />
   }
 }

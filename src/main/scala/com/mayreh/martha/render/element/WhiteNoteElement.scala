@@ -1,11 +1,11 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.Size
+import com.mayreh.martha.render.{Rect, Size}
 
-class WhiteNoteElement(size: Size) {
+class WhiteNoteElement(frame: Rect) {
 
   val element: scala.xml.Elem = {
-    val Size(w, h) = size
+    val Size(w, h) = frame.size
 
       <path
       d={s"""M ${ w * 0.19589 } ${ h * 0.20055556 }
@@ -21,6 +21,7 @@ class WhiteNoteElement(size: Size) {
       stroke="transparent"
       fill="black"
       fill-rule="evenodd"
+      transform={s"translate(${frame.x}, ${frame.y})"}
       />
   }
 }
