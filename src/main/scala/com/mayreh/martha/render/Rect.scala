@@ -5,6 +5,11 @@ case class Rect(origin: Point, size: Size) {
   val y: Float = origin.y
   val width: Float = size.width
   val height: Float = size.height
+
+  val topRight: Point = origin.copy(x = origin.x + width)
+  val bottomRight: Point = origin.copy(x = origin.x + width, y = origin.y + height)
+  val topLeft: Point = origin
+  val bottomLeft: Point = origin.copy(y = origin.y + height)
 }
 
 object Rect {
