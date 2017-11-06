@@ -2,7 +2,7 @@ package com.mayreh.martha.render.element
 
 import com.mayreh.martha.render.{Rect, Size}
 
-class QuarterRestElement(frame: Rect) {
+case class QuarterRestElement(frame: Rect) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
     val Size(w, h) = frame.size

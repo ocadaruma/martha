@@ -10,6 +10,9 @@ case class Rect(origin: Point, size: Size) {
   val bottomRight: Point = origin.copy(x = origin.x + width, y = origin.y + height)
   val topLeft: Point = origin
   val bottomLeft: Point = origin.copy(y = origin.y + height)
+
+  def withX(x: Float): Rect = this.copy(origin = this.origin.copy(x = x))
+  def withY(y: Float): Rect = this.copy(origin = this.origin.copy(y = y))
 }
 
 object Rect {

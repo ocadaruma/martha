@@ -2,11 +2,11 @@ package com.mayreh.martha.render.element
 
 import com.mayreh.martha.render.LocalPoint
 
-class SlurElement(
+case class SlurElement(
   start: LocalPoint,
   end: LocalPoint,
   inverted: Boolean = false,
-  thickness: Float = 2) {
+  thickness: Float = 2) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
 

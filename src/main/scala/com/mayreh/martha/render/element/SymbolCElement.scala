@@ -2,7 +2,7 @@ package com.mayreh.martha.render.element
 
 import com.mayreh.martha.render.{Rect, Size}
 
-class SymbolCElement(frame: Rect) {
+case class SymbolCElement(frame: Rect) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
     val Size(w, h) = frame.size

@@ -3,14 +3,14 @@ package com.mayreh.martha.render.element
 import com.mayreh.martha.render.calc.LinearExpr
 import com.mayreh.martha.render.{Point, Rect, Size}
 
-class BracketElement(
+case class BracketElement(
   frame: Rect,
   notes: Int = 3,
   lineWidth: Float = 1,
   beamHeight: Float = 5,
   fontSize: Float = 16,
   rightDown: Boolean = false,
-  inverted: Boolean = false) {
+  inverted: Boolean = false) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
     val Size(w, h) = frame.size

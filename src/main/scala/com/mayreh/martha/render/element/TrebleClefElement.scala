@@ -2,7 +2,7 @@ package com.mayreh.martha.render.element
 
 import com.mayreh.martha.render.{Rect, Size}
 
-class TrebleClefElement(frame: Rect) {
+case class TrebleClefElement(frame: Rect) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
     val Size(width, height) = frame.size

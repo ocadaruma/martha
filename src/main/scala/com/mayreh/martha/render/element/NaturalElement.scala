@@ -2,7 +2,7 @@ package com.mayreh.martha.render.element
 
 import com.mayreh.martha.render.{Rect, Size}
 
-class NaturalElement(frame: Rect) {
+case class NaturalElement(frame: Rect) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
     val Size(w, h) = frame.size

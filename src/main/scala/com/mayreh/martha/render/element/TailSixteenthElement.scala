@@ -2,7 +2,7 @@ package com.mayreh.martha.render.element
 
 import com.mayreh.martha.render.{Rect, Size}
 
-class TailSixteenthElement(frame: Rect, inverted: Boolean = false) {
+case class TailSixteenthElement(frame: Rect, inverted: Boolean = false) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
     val Size(w, height) = frame.size

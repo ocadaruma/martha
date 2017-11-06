@@ -2,7 +2,7 @@ package com.mayreh.martha.render.element
 
 import com.mayreh.martha.render.{Rect, Size}
 
-class BeamElement(frame: Rect, lineWidth: Float = 0, rightDown: Boolean = false) {
+case class BeamElement(frame: Rect, lineWidth: Float = 0, rightDown: Boolean = false) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
     val Size(w, h) = frame.size

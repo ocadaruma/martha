@@ -2,7 +2,7 @@ package com.mayreh.martha.render.element
 
 import com.mayreh.martha.render.{Rect, Size}
 
-class FlatElement(frame: Rect) {
+case class FlatElement(frame: Rect) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
 
