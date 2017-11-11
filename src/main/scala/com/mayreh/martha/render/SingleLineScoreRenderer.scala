@@ -609,6 +609,7 @@ class SingleLineScoreRenderer(
             for ((xOffset, element) <- group) {
               val x = element match {
                 case c: Chord if c.pitches.sparse => xOffset
+                case c if !c.isInstanceOf[Chord] => xOffset
                 case _ => xOffset + layout.noteHeadSize.width
               }
               val bottomY = lowerF(x)
