@@ -1,8 +1,9 @@
 package com.mayreh.martha.core
 
 sealed trait MusicalElement
-sealed trait TupletMember extends MusicalElement
-sealed trait BeamMember extends MusicalElement
+sealed trait HasLength { def length: NoteLength }
+sealed trait TupletMember extends MusicalElement with HasLength
+sealed trait BeamMember extends MusicalElement with HasLength
 
 object NoSound {
   case object BarLine extends MusicalElement
@@ -35,4 +36,6 @@ case class Tuplet(notes: Int, inTimeOf: Option[Int], elements: Seq[TupletMember]
       case _ => 3
     }
   }
+
+  val ratio: Float = time.toFloat / notes
 }

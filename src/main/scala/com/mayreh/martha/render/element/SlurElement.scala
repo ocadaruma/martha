@@ -6,7 +6,7 @@ case class SlurElement(
   start: LocalPoint,
   end: LocalPoint,
   inverted: Boolean = false,
-  thickness: Float = 2) extends ScoreElementBase {
+  thickness: Float = 2) {
 
   val element: scala.xml.Elem = {
 

@@ -50,4 +50,8 @@ object LinearExpr {
       p2.x - p1.x,
       (p1.x * p2.y) - (p2.x * p1.y))
   }
+
+  def apply(slope: Float, point: Point): LinearExpr = {
+
+  }
 }
