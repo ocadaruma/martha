@@ -4,7 +4,7 @@ import com.mayreh.martha.core.Metadata.VoiceHeader
 import com.mayreh.martha.core.NoSound._
 import com.mayreh.martha.core._
 import com.mayreh.martha.render.component.NoteComponent
-import com.mayreh.martha.render.element.RectElement
+import com.mayreh.martha.render.element.{DoubleBarElement, RectElement}
 import com.mayreh.martha.render.util.calcDenominator
 
 class SingleLineScore(
@@ -19,7 +19,9 @@ class SingleLineScore(
   private[this] val nodeBuffer = new scala.xml.NodeBuffer
 
   def render(): scala.xml.Elem = {
-    <svg width={ frame.width.toString } height={ frame.height.toString }>
+    drawStaff()
+
+    <svg xmlns="http://www.w3.org/2000/svg" width={ frame.width.toString } height={ frame.height.toString } viewBox={ s"${frame.x} ${frame.y} ${frame.width} ${frame.height}" }>
       { nodeBuffer.toList }
     </svg>
   }
@@ -64,7 +66,7 @@ class SingleLineScore(
             layout.stemWidth,
             layout.staffHeight)).element
         case DoubleBarLine =>
-          nodeBuffer += RectElement(Rect(
+          nodeBuffer += DoubleBarElement(Rect(
             xOffset - layout.barMarginRight,
             staffTop,
             layout.stemWidth * 3,
@@ -144,5 +146,13 @@ class SingleLineScore(
   private def drawStaff(): Unit = {
     val width = frame.width
     val top = staffTop
+
+    val paths = (0 until staffNum).map { i =>
+      val offset = staffInterval * i
+
+      s"M 0 ${top + offset} L ${width} ${top + offset}"
+    }.mkString(" ")
+
+    nodeBuffer += <path d={ paths } fill="none" stroke="black" stroke-width={ layout.staffLineWidth.toString } />
   }
 }
