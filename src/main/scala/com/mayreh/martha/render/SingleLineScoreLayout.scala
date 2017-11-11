@@ -17,14 +17,10 @@ case class SingleLineScoreLayout(
   clefWidth: Float,
   meterSymbolWidth: Float,
 ) {
-  import SingleLineScoreLayout._
-
   def staffInterval: Float = staffHeight / (staffNum - 1)
 }
 
 object SingleLineScoreLayout {
-
-  val staffNum: Int = 5
 
   val default: SingleLineScoreLayout = SingleLineScoreLayout(
     staffHeight = 60,

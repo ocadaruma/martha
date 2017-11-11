@@ -1,5 +1,6 @@
 package com.mayreh.martha.render
 
+import com.mayreh.martha.core.Metadata.{Key, Meter}
 import com.mayreh.martha.core._
 import com.mayreh.martha.render.calc.LinearExpr
 import com.mayreh.martha.render.component._
@@ -26,9 +27,9 @@ object NoteHeadColumn {
 }
 
 class SingleLineScoreRenderer(
-  unitDenominator: UnitDenominator,
-  layout: SingleLineScoreLayout,
-  bounds: Rect,
+  val unitDenominator: UnitDenominator,
+  val layout: SingleLineScoreLayout,
+  val bounds: Rect,
 ) {
 
   private val staffTop: Float = (bounds.height - layout.staffHeight) / 2
@@ -130,6 +131,97 @@ class SingleLineScoreRenderer(
     staff.toList
   }
 
+  def mkClef(x: Float, clef: Clef): ScoreElementBase = {
+    clef match {
+      case Clef.Treble =>
+        val height = layout.staffHeight * 1.6f
+        val y = (staffTop + layout.staffInterval * 3) - TrebleClefElement.yRatioAtG * height
+        TrebleClefElement(Rect(x, y, layout.clefWidth, height))
+      case Clef.Bass =>
+        throw new RuntimeException(s"currently not supported: ${clef}")
+    }
+  }
+
+  def mkMeter(x: Float, meter: Meter): ScoreElementBase = {
+    SymbolCElement(Rect(
+      x + 6, // margin
+      staffTop + layout.staffInterval,
+      layout.meterSymbolWidth,
+      layout.staffInterval * 2
+    ))
+  }
+
+  def mkKeySignature(x: Float, key: Key): Seq[ScoreElementBase] = {
+    val flats = Seq(
+      Pitch(PitchName.B, Some(Accidental.Flat), Octave(0)),
+      Pitch(PitchName.E, Some(Accidental.Flat), Octave(1)),
+      Pitch(PitchName.A, Some(Accidental.Flat), Octave(0)),
+      Pitch(PitchName.D, Some(Accidental.Flat), Octave(1)),
+      Pitch(PitchName.G, Some(Accidental.Flat), Octave(0)),
+      Pitch(PitchName.C, Some(Accidental.Flat), Octave(1)),
+      Pitch(PitchName.F, Some(Accidental.Flat), Octave(0))
+    )
+
+    val sharps = Seq(
+      Pitch(PitchName.F, Some(Accidental.Sharp), Octave(1)),
+      Pitch(PitchName.C, Some(Accidental.Sharp), Octave(1)),
+      Pitch(PitchName.G, Some(Accidental.Sharp), Octave(1)),
+      Pitch(PitchName.D, Some(Accidental.Sharp), Octave(1)),
+      Pitch(PitchName.A, Some(Accidental.Sharp), Octave(0)),
+      Pitch(PitchName.E, Some(Accidental.Sharp), Octave(1)),
+      Pitch(PitchName.B, Some(Accidental.Sharp), Octave(0)),
+    )
+
+    val num = key.keySignature match {
+      case KeySignature.Flat1 | KeySignature.Sharp1 => 1
+      case KeySignature.Flat2 | KeySignature.Sharp2 => 1
+      case KeySignature.Flat3 | KeySignature.Sharp3 => 1
+      case KeySignature.Flat4 | KeySignature.Sharp4 => 1
+      case KeySignature.Flat5 | KeySignature.Sharp5 => 1
+      case KeySignature.Flat6 | KeySignature.Sharp6 => 1
+      case KeySignature.Flat7 | KeySignature.Sharp7 => 1
+      case _ => 0
+    }
+
+    val pitches = key.keySignature match {
+      case _: SharpFamily => sharps.take(num)
+      case _ => flats.take(num)
+    }
+
+    val result = mu.ListBuffer.empty[ScoreElementBase]
+    var localX = x + layout.staffInterval + 4 // margin
+    for (p <- pitches) {
+      result += mkAccidental(p, localX).get
+      localX += layout.staffInterval
+    }
+
+    result.toList
+  }
+
+  def mkTie(start: Option[NoteComponent], end: Option[NoteComponent]): Option[SlurElement] = {
+    (start, end) match {
+      case (Some(s), Some(e)) =>
+        val noteHeadFramesAtStart = s.pitches.map(_.noteHead.frame)
+        val noteHeadFramesAtEnd = e.pitches.map(_.noteHead.frame)
+
+        val inverted = s.inverted
+
+        val startX = noteHeadFramesAtStart.map(_.maxX).max - layout.noteHeadSize.width / 2
+        val startY = if (inverted) noteHeadFramesAtStart.map(_.minY).min else noteHeadFramesAtStart.map(_.maxY).max
+        val endX = noteHeadFramesAtEnd.map(_.minX).min + layout.noteHeadSize.width / 2
+        val endY = if (inverted) noteHeadFramesAtEnd.map(_.minY).min else noteHeadFramesAtEnd.map(_.maxY).max
+
+        Some(
+          SlurElement(
+          LocalPoint(Point(startX, startY)),
+          LocalPoint(Point(endX, endY)),
+          inverted)
+        )
+      case _ =>
+        None
+    }
+  }
+
   private def mkAccidental(pitch: Pitch, x: Float): Option[ScoreElementBase] = {
     val noteHeadFrame = mkNoteHeadFrame(pitch, x)
 
@@ -169,6 +261,8 @@ class SingleLineScoreRenderer(
             noteHeadFrame.y,
             layout.staffInterval,
             layout.staffInterval)))
+      case _ =>
+        None
     }
   }
 
@@ -221,10 +315,10 @@ class SingleLineScoreRenderer(
 
   private def shouldInvert(chord: Chord): Boolean = chord.pitches.map(_.step).sum / chord.pitches.size >= BOn3rdStave.step
 
-  private def mkNoteComponent(x: Float, chord: Chord): NoteComponent =
+  def mkNoteComponent(x: Float, chord: Chord): NoteComponent =
     mkNoteComponent(x, chord, overrideInverted = None, autoStem = true, overrideStem = None, overrideTail = None)
 
-  private def mkNoteComponent(x: Float, note: Note): NoteComponent =
+  def mkNoteComponent(x: Float, note: Note): NoteComponent =
     mkNoteComponent(x, note, overrideInverted = None, autoStem = true, overrideStem = None, overrideTail = None)
 
   private def mkNoteComponent(
@@ -258,7 +352,7 @@ class SingleLineScoreRenderer(
     }
   }
 
-  private def mkRestComponent(x: Float, rest: Rest): RestComponent = {
+  def mkRestComponent(x: Float, rest: Rest): RestComponent = {
 
     val length = rest.length.absoluteLength(unitDenominator)
 

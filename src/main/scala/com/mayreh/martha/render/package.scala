@@ -4,12 +4,14 @@ import com.mayreh.martha.core._
 
 package object render {
 
+  val staffNum: Int = 5
+
   implicit class RichSeq[A](val self: Seq[A]) extends AnyVal {
 
     /**
      * Denotes whether all pitches are separated or not.
      */
-    def sparse(implicit ev: A =:= Pitch): Boolean = {
+    def sparse(implicit ev: A =:= Pitch, ev2: Ordering[A]): Boolean = {
       self.sorted.sliding(2).forall {
         case Seq(l, r) => (l.step - r.step).abs > 1
         case _ => true
@@ -23,21 +25,30 @@ package object render {
 
       var acc = ListBuffer.empty[A]
       for (e <- self) {
-        acc.headOption.fold {
-          acc += e
-        } { head =>
-          if (f(e) == f(head)) {
+        acc.headOption match {
+          case Some(head) =>
+            if (f(e) == f(head)) {
+              acc += e
+            } else {
+              result += acc.toList
+              acc = ListBuffer(e)
+            }
+          case None =>
             acc += e
-          } else {
-            result += acc.toList
-            acc = ListBuffer(e)
-          }
         }
       }
 
       if (acc.nonEmpty) { result += acc.toList }
 
       result.toList
+    }
+
+    def get(idx: Int): Option[A] = {
+      if (0 <= idx && idx < self.size) {
+        Some(self(idx))
+      } else {
+        None
+      }
     }
   }
 
