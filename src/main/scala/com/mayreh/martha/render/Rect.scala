@@ -1,5 +1,8 @@
 package com.mayreh.martha.render
 
+/**
+ * Represents 2D rectangle.
+ */
 case class Rect(origin: Point, size: Size) {
   val x: Float = origin.x
   val y: Float = origin.y

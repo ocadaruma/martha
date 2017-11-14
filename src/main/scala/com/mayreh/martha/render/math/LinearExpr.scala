@@ -1,4 +1,4 @@
-package com.mayreh.martha.render.calc
+package com.mayreh.martha.render.math
 
 import com.mayreh.martha.render.{Point, Rect}
 
@@ -7,7 +7,7 @@ import com.mayreh.martha.render.{Point, Rect}
  */
 case class LinearExpr(a: Float, b: Float, c: Float) {
 
-  val grad: Float = -a / b
+  val slope: Float = -a / b
   val intercept: Float = -c / b
 
   def intersectionPoint(other: LinearExpr): Option[Point] = {
@@ -39,11 +39,14 @@ case class LinearExpr(a: Float, b: Float, c: Float) {
     }
   }
 
-  def apply(x: Float): Float = this.grad * x + intercept
+  def apply(x: Float): Float = this.slope * x + intercept
 }
 
 object LinearExpr {
 
+  /**
+   * Returns linear expression passing two points.
+   */
   def apply(p1: Point, p2: Point): LinearExpr = {
     LinearExpr(
       p1.y - p2.y,
@@ -51,6 +54,9 @@ object LinearExpr {
       (p1.x * p2.y) - (p2.x * p1.y))
   }
 
+  /**
+   * Returns linear expression has specific slope and passing point.
+   */
   def apply(slope: Float, point: Point): LinearExpr = {
     LinearExpr(
       slope,

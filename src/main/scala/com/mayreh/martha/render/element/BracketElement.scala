@@ -1,6 +1,6 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.calc.LinearExpr
+import com.mayreh.martha.render.math.LinearExpr
 import com.mayreh.martha.render.{Point, Rect, Size}
 
 case class BracketElement(
@@ -34,47 +34,47 @@ case class BracketElement(
       if (inverted) {
         if (h * 0.8 < fontSize) {
             <path
-            d={ s"M ${lineWidth} ${lineWidth} ${beamPath(Point(lineWidth, lineWidth + beamHeight), Point(w - lineWidth, lineWidth + beamHeight))} L ${w - lineWidth} ${lineWidth}" }
             fill="none"
             stroke-width={ s"${lineWidth}" }
             stroke="black"
+            d={ s"M ${lineWidth} ${lineWidth} ${beamPath(Point(lineWidth, lineWidth + beamHeight), Point(w - lineWidth, lineWidth + beamHeight))} L ${w - lineWidth} ${lineWidth}" }
             />
         } else if (rightDown) {
             <path
-            d={ s"M ${lineWidth} ${lineWidth} ${beamPath(Point(lineWidth, lineWidth + beamHeight), Point(w - lineWidth, h - lineWidth))} L ${w - lineWidth} ${h - beamHeight - lineWidth}" }
             fill="none"
             stroke-width={ s"${lineWidth}" }
             stroke="black"
+            d={ s"M ${lineWidth} ${lineWidth} ${beamPath(Point(lineWidth, lineWidth + beamHeight), Point(w - lineWidth, h - lineWidth))} L ${w - lineWidth} ${h - beamHeight - lineWidth}" }
             />
         } else {
             <path
-            d={ s"M ${lineWidth} ${h - beamHeight - lineWidth} ${beamPath(Point(lineWidth, h - lineWidth), Point(w - lineWidth, beamHeight + lineWidth))} L ${w - lineWidth} ${lineWidth}" }
             fill="none"
             stroke-width={ s"${lineWidth}" }
             stroke="black"
+            d={ s"M ${lineWidth} ${h - beamHeight - lineWidth} ${beamPath(Point(lineWidth, h - lineWidth), Point(w - lineWidth, beamHeight + lineWidth))} L ${w - lineWidth} ${lineWidth}" }
             />
         }
       } else {
         if (h * 0.8 < fontSize) {
             <path
-            d={ s"M ${lineWidth} ${h} ${beamPath(Point(lineWidth, h - beamHeight - lineWidth), Point(w - lineWidth, h - beamHeight - lineWidth))} L ${w - lineWidth} ${h}" }
             fill="none"
             stroke-width={ s"${lineWidth}" }
             stroke="black"
+            d={ s"M ${lineWidth} ${h} ${beamPath(Point(lineWidth, h - beamHeight - lineWidth), Point(w - lineWidth, h - beamHeight - lineWidth))} L ${w - lineWidth} ${h}" }
             />
         } else if (rightDown) {
             <path
-            d={ s"M ${lineWidth} ${beamHeight + lineWidth} ${beamPath(Point(lineWidth, lineWidth), Point(w - lineWidth, h - beamHeight - lineWidth))} L ${w - lineWidth} ${h}" }
             fill="none"
             stroke-width={ s"${lineWidth}" }
             stroke="black"
+            d={ s"M ${lineWidth} ${beamHeight + lineWidth} ${beamPath(Point(lineWidth, lineWidth), Point(w - lineWidth, h - beamHeight - lineWidth))} L ${w - lineWidth} ${h}" }
             />
         } else {
             <path
-            d={ s"M ${lineWidth} ${h} ${beamPath(Point(lineWidth, h - beamHeight - lineWidth), Point(w - lineWidth, lineWidth))} L ${w - lineWidth} ${beamHeight + lineWidth}" }
             fill="none"
             stroke-width={ s"${lineWidth}" }
             stroke="black"
+            d={ s"M ${lineWidth} ${h} ${beamPath(Point(lineWidth, h - beamHeight - lineWidth), Point(w - lineWidth, lineWidth))} L ${w - lineWidth} ${beamHeight + lineWidth}" }
             />
         }
       }

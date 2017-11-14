@@ -146,13 +146,14 @@ class SingleLineScore(
   private def drawStaff(): Unit = {
     val width = frame.width
     val top = staffTop
+    val w = layout.staffLineWidth / 2
 
     val paths = (0 until staffNum).map { i =>
       val offset = staffInterval * i
 
-      s"M 0 ${top + offset} L ${width} ${top + offset}"
+      s"M 0 ${top + offset - w} L ${width} ${top + offset - w} L ${width} ${top + offset + w} L 0 ${top + offset + w} Z"
     }.mkString(" ")
 
-    nodeBuffer += <path d={ paths } fill="none" stroke="black" stroke-width={ layout.staffLineWidth.toString } />
+    nodeBuffer += <path fill="black" stroke="none" d={ paths } />
   }
 }

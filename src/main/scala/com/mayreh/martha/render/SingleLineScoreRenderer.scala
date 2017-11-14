@@ -2,7 +2,7 @@ package com.mayreh.martha.render
 
 import com.mayreh.martha.core.Metadata.{Key, Meter}
 import com.mayreh.martha.core._
-import com.mayreh.martha.render.calc.LinearExpr
+import com.mayreh.martha.render.math.LinearExpr
 import com.mayreh.martha.render.component._
 import com.mayreh.martha.render.element._
 import com.mayreh.martha.render.util._
@@ -144,7 +144,7 @@ class SingleLineScoreRenderer(
 
   def mkMeter(x: Float, meter: Meter): ScoreElementBase = {
     SymbolCElement(Rect(
-      x + 6, // margin
+      x + (layout.unitScale * 6), // margin
       staffTop + layout.staffInterval,
       layout.meterSymbolWidth,
       layout.staffInterval * 2
@@ -189,7 +189,7 @@ class SingleLineScoreRenderer(
     }
 
     val result = mu.ListBuffer.empty[ScoreElementBase]
-    var localX = x + layout.staffInterval + 4 // margin
+    var localX = x + layout.staffInterval + (layout.unitScale * 4) // margin
     for (p <- pitches) {
       result += mkAccidental(p, localX).get
       localX += layout.staffInterval

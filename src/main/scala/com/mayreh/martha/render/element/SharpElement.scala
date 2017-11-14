@@ -7,11 +7,21 @@ case class SharpElement(frame: Rect) extends ScoreElementBase {
   val element: scala.xml.Elem = {
     val Size(w, h) = frame.size
 
+    val vw = w/10 // vertical line width
+    val hw = w/5 // horizontal line width
+
     <g transform={s"translate(${frame.x}, ${frame.y})"}>
-      <path d={ s"M ${w/4} 0 L ${w/4} ${h}" } fill="none" stroke="black" stroke-width={ s"${w/10}" } />
-      <path d={ s"M ${w/4 * 3} 0 L ${w/4 * 3} ${h}" } fill="none" stroke="black" stroke-width={ s"${w/10}" } />
-      <path d={ s"M 0 ${h/3} L ${w} ${h/6}" } fill="none" stroke="black" stroke-width={ s"${w/5}" } />
-      <path d={ s"M ${w} ${h/3 * 2} L 0 ${h/6 * 5}" } fill="none" stroke="black" stroke-width={ s"${w/5}" } />
+      <path fill="black" stroke="none"
+            d={ s"M ${w/4 - vw/2} 0 L ${w/4 + vw/2} 0 L ${w/4 + vw/2} ${h} L ${w/4 - vw/2} ${h} Z" } />
+
+      <path fill="black" stroke="none"
+            d={ s"M ${w/4*3 - vw/2} 0 L ${w/4*3 + vw/2} 0 L ${w/4*3 + vw/2} ${h} L ${w/4*3 - vw/2} ${h} Z" } />
+
+      <path fill="black" stroke="none"
+            d={ s"M 0 ${h/3 - hw/2} L ${w} ${h/6 - hw/2} L ${w} ${h/6 + hw/2} L 0 ${h/3 + hw/2} Z" } />
+
+      <path fill="black" stroke="none"
+            d={ s"M 0 ${h/6*5 - hw/2} L ${w} ${h/3*2 - hw/2} L ${w} ${h/3*2 + hw/2} 0 ${h/6*5 + hw/2} Z" } />
     </g>
   }
 }
