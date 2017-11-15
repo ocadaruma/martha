@@ -1,8 +1,8 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.{Rect, Size}
+import com.mayreh.martha.render.{Color, Rect, Size}
 
-case class NaturalElement(frame: Rect) extends ScoreElementBase {
+case class NaturalElement(frame: Rect, color: Color = ScoreElementBase.defaultColor) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
     val Size(w, h) = frame.size
@@ -21,8 +21,8 @@ case class NaturalElement(frame: Rect) extends ScoreElementBase {
             |L ${ w * 0.11694 } ${ h * 0.261785 }
             |L ${ w * 0.11694 } ${ h * -1.95E-4 }
             |L ${ w * 0.01334 } ${ h * -1.95E-4 }""".stripMargin}
-      stroke="transparent"
-      fill="black"
+      stroke="none"
+      fill={color.hexRGB}
       transform={s"translate(${frame.x}, ${frame.y})"}
       />
   }

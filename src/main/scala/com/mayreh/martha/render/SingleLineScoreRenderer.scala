@@ -213,10 +213,14 @@ class SingleLineScoreRenderer(
 
         Some(
           SlurElement(
-          LocalPoint(Point(startX, startY)),
-          LocalPoint(Point(endX, endY)),
-          inverted)
-        )
+            Rect(
+              noteHeadFramesAtStart.map(_.minX).min,
+              0,
+              noteHeadFramesAtEnd.map(_.maxX).max - noteHeadFramesAtStart.map(_.minX).min,
+              bounds.height),
+            LocalPoint(Point(startX, startY)),
+            LocalPoint(Point(endX, endY)),
+            inverted))
       case _ =>
         None
     }

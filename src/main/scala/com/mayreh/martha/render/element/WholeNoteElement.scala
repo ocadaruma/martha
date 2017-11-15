@@ -1,8 +1,8 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.{Rect, Size}
+import com.mayreh.martha.render.{Color, Rect, Size}
 
-case class WholeNoteElement(frame: Rect) extends ScoreElementBase {
+case class WholeNoteElement(frame: Rect, color: Color = ScoreElementBase.defaultColor) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
     val Size(w, h) = frame.size
@@ -15,8 +15,8 @@ case class WholeNoteElement(frame: Rect) extends ScoreElementBase {
             |C ${ w * 0.14241 } ${ h * 0.2186 }, ${ w * 0.16542 } ${ h * 0.47 }, ${ w * 0.30644 } ${ h * 0.681414 }
             |C ${ w * 0.44746 } ${ h * 0.892457 }, ${ w * 0.65309 } ${ h * 0.98281 }, ${ w * 0.76573 } ${ h * 0.883257 }
             |C ${ w * 0.87836 } ${ h * 0.7836857 }, ${ w * 0.85535 } ${ h * 0.5319 }, ${ w * 0.71433 } ${ h * 0.32087 }""".stripMargin}
-      stroke="transparent"
-      fill="black"
+      stroke="none"
+      fill={color.hexRGB}
       fill-rule="evenodd"
       transform={s"translate(${frame.x}, ${frame.y})"}
       />

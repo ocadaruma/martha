@@ -1,8 +1,8 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.{Rect, Size}
+import com.mayreh.martha.render.{Color, Rect, Size}
 
-case class TrebleClefElement(frame: Rect) extends ScoreElementBase {
+case class TrebleClefElement(frame: Rect, color: Color = ScoreElementBase.defaultColor) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
     val Size(width, height) = frame.size
@@ -52,8 +52,8 @@ case class TrebleClefElement(frame: Rect) extends ScoreElementBase {
             |C ${ w * 126.28125 } ${ h * 273.0189 } ${ w * 114.71907 } ${ h * 287.119 } ${ w * 100.53125 } ${ h * 294.6875 }
             |C ${ w * 94.88639 } ${ h * 271.85527 } ${ w * 88.326542 } ${ h * 246.25854 } ${ w * 81.9375 } ${ h * 220.96875 }
             |C ${ w * 85.415346 } ${ h * 219.77396 } ${ w * 89.120995 } ${ h * 219.11912 } ${ w * 92.9375 } ${ h * 219.15625 } z""".stripMargin}
-      stroke="transparent"
-      fill="black"
+      stroke="none"
+      fill={color.hexRGB}
       transform={s"translate(${frame.x}, ${frame.y})"}
       />
   }

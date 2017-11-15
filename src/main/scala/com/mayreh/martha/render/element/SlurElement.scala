@@ -1,12 +1,14 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.LocalPoint
+import com.mayreh.martha.render.{Color, LocalPoint, Rect}
 
 case class SlurElement(
+  frame: Rect,
   start: LocalPoint,
   end: LocalPoint,
   inverted: Boolean = false,
-  thickness: Float = 2) {
+  thickness: Float = 2,
+  color: Color = ScoreElementBase.defaultColor) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
 
@@ -37,7 +39,7 @@ case class SlurElement(
             |C ${controlx2 - thickness * uy} ${controly2 + thickness * ux}, ${controlx1 - thickness * uy} ${controly1 + thickness * ux}, ${x1} ${y1}
             |Z""".stripMargin}
       stroke="none"
-      fill="black"
+      fill={color.hexRGB}
       />
   }
 }

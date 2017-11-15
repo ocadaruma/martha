@@ -1,8 +1,8 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.{Rect, Size}
+import com.mayreh.martha.render.{Color, Rect, Size}
 
-case class TailSixteenthElement(frame: Rect, inverted: Boolean = false) extends ScoreElementBase {
+case class TailSixteenthElement(frame: Rect, inverted: Boolean = false, color: Color = ScoreElementBase.defaultColor) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
     val Size(w, height) = frame.size
@@ -36,8 +36,8 @@ case class TailSixteenthElement(frame: Rect, inverted: Boolean = false) extends 
         />
 
     val g =
-      <g stroke="transparent"
-         fill="black"
+      <g stroke="none"
+         fill={color.hexRGB}
          transform={if (inverted) s"translate(${frame.x}, ${frame.y + height}) scale(1, -1)" else s"translate(${frame.x}, ${frame.y}) scale(1, 1)"}>
         {path2}
         {path}

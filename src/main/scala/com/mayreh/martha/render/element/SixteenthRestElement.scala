@@ -1,8 +1,8 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.{Rect, Size}
+import com.mayreh.martha.render.{Color, Rect, Size}
 
-case class SixteenthRestElement(frame: Rect) extends ScoreElementBase {
+case class SixteenthRestElement(frame: Rect, color: Color = ScoreElementBase.defaultColor) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
     val Size(w, h) = frame.size
@@ -31,8 +31,8 @@ case class SixteenthRestElement(frame: Rect) extends ScoreElementBase {
             |C ${ w * 0.73075 } ${ h * 0.276555 }, ${ w * 0.80909 } ${ h * 0.192415 }, ${ w * 0.85563 } ${ h * 0.12623 }
             |C ${ w * 0.72062 } ${ h * 0.16417 }, ${ w * 0.54149 } ${ h * 0.21166 }, ${ w * 0.37675 } ${ h * 0.21166 }
             |C ${ w * 0.21202 } ${ h * 0.21166 }, ${ w * 0.14828 } ${ h * 0.146015 }, ${ w * 0.14828 } ${ h * 0.107425 }""".stripMargin}
-      stroke="transparent"
-      fill="black"
+      stroke="none"
+      fill={color.hexRGB}
       transform={s"translate(${frame.x}, ${frame.y})"}
       />
   }

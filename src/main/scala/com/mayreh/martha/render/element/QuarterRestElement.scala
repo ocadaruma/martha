@@ -1,8 +1,8 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.{Rect, Size}
+import com.mayreh.martha.render.{Color, Rect, Size}
 
-case class QuarterRestElement(frame: Rect) extends ScoreElementBase {
+case class QuarterRestElement(frame: Rect, color: Color = ScoreElementBase.defaultColor) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
     val Size(w, h) = frame.size
@@ -22,8 +22,8 @@ case class QuarterRestElement(frame: Rect) extends ScoreElementBase {
             |C ${ w * 0.24928 } ${ h * 0.41585332 }, ${ w * 0.42521 } ${ h * 0.31671 }, ${ w * 0.42826 } ${ h * 0.24957334 }
             |C ${ w * 0.43065 } ${ h * 0.19700667 }, ${ w * 0.31473 } ${ h * 0.11691 }, ${ w * 0.0797 } ${ h * 0.017193334 }
             |L ${ w * 0.12912 } ${ h * -4.0E-4 }""".stripMargin}
-      stroke="transparent"
-      fill="black"
+      stroke="none"
+      fill={color.hexRGB}
       transform={s"translate(${frame.x}, ${frame.y})"}
       />
   }

@@ -1,8 +1,8 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.{Rect, Size}
+import com.mayreh.martha.render.{Color, Rect, Size}
 
-case class EighthRestElement(frame: Rect) extends ScoreElementBase {
+case class EighthRestElement(frame: Rect, color: Color = ScoreElementBase.defaultColor) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
     val Size(w, h) = frame.size
@@ -21,8 +21,8 @@ case class EighthRestElement(frame: Rect) extends ScoreElementBase {
             |C ${ w * 0.76833 } ${ h * 0.09607334 }, ${ w * 0.36529 } ${ h * 0.30407333 }, ${ w * 0.24391 } ${ h * 0.30407333 }
             |C ${ w * 0.12252 } ${ h * 0.30407333 }, ${ w * 0.08204 } ${ h * 0.26653334 }, ${ w * 0.05588 } ${ h * 0.24938667 }
             |C ${ w * 0.02972 } ${ h * 0.23224 }, ${ w * 4.1E-4 } ${ h * 0.20271334 }, ${ w * 4.1E-4 } ${ h * 0.15148 }""".stripMargin}
-      stroke="transparent"
-      fill="black"
+      stroke="none"
+      fill={color.hexRGB}
       transform={s"translate(${frame.x}, ${frame.y})"}
       />
   }

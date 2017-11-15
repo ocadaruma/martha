@@ -1,8 +1,8 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.{Rect, Size}
+import com.mayreh.martha.render.{Color, Rect, Size}
 
-case class SymbolTwoElement(frame: Rect) extends ScoreElementBase {
+case class SymbolTwoElement(frame: Rect, color: Color = ScoreElementBase.defaultColor) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
     val Size(w, h) = frame.size
@@ -30,8 +30,8 @@ case class SymbolTwoElement(frame: Rect) extends ScoreElementBase {
             |C ${ w * 0.71004 } ${ h * 0.09331334 }, ${ w * 0.59863 } ${ h * 0.047593333 }, ${ w * 0.49493 } ${ h * 0.047593333 }
             |C ${ w * 0.39124 } ${ h * 0.047593333 }, ${ w * 0.25267 } ${ h * 0.082846664 }, ${ w * 0.24273 } ${ h * 0.14595333 }
             |C ${ w * 0.23279 } ${ h * 0.20906 }, ${ w * 0.35611 } ${ h * 0.23942 }, ${ w * 0.34715 } ${ h * 0.31269333 }""".stripMargin}
-      stroke="transparent"
-      fill="black"
+      stroke="none"
+      fill={color.hexRGB}
       transform={s"translate(${frame.x}, ${frame.y})"}
       />
   }

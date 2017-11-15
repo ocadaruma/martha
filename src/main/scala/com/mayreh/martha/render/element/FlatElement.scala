@@ -1,8 +1,8 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.{Rect, Size}
+import com.mayreh.martha.render.{Color, Rect, Size}
 
-case class FlatElement(frame: Rect) extends ScoreElementBase {
+case class FlatElement(frame: Rect, color: Color = ScoreElementBase.defaultColor) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
 
@@ -22,8 +22,8 @@ case class FlatElement(frame: Rect) extends ScoreElementBase {
              |C ${ w * 0.3330625 } ${ h * 0.88185 }, ${ w * 0.16515625 } ${ h * 0.90546 }, ${ w * 0.08853125 } ${ h * 0.93096 }
              |L ${ w * 0.09765625 } ${ h * 0.001425 }
              |L ${ w * -0.005984375 } ${ h * 0.001425 }""".stripMargin}
-      stroke="transparent"
-      fill="black"
+      stroke="none"
+      fill={color.hexRGB}
       transform={s"translate(${frame.x}, ${frame.y})"}
       />
   }

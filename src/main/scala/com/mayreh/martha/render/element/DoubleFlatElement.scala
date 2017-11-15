@@ -1,8 +1,8 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.{Rect, Size}
+import com.mayreh.martha.render.{Color, Rect, Size}
 
-case class DoubleFlatElement(frame: Rect) extends ScoreElementBase {
+case class DoubleFlatElement(frame: Rect, color: Color = ScoreElementBase.defaultColor) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
 
@@ -45,8 +45,8 @@ case class DoubleFlatElement(frame: Rect) extends ScoreElementBase {
         />
 
     val g =
-      <g stroke="transparent"
-         fill="black"
+      <g stroke="none"
+         fill={color.hexRGB}
          transform={s"translate(${frame.x}, ${frame.y})"}>
         {path}
         {path2}
