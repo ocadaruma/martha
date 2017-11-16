@@ -10,7 +10,7 @@ case class Color(r: Int, g: Int, b: Int, a: Int) {
 
 object Color {
 
-  final val black: Color = Color(255, 0, 0, 0)
+  final val black: Color = Color(0, 0, 0, 255)
 
   def apply(hexCode: String): Color = {
     def parseHex(s: String): Int = Integer.parseInt(s, 16)
