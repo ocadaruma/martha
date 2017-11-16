@@ -80,8 +80,8 @@ class SingleLineScoreRenderer(
 
   private def mkDots(pitch: Pitch, x: Float, length: NoteLength, u: UnitDenominator): Seq[EllipseElement] = {
     val result = scala.collection.mutable.ListBuffer.empty[EllipseElement]
-    val length1 = length.absoluteLength(u) - u.denominator
-    val denom1 = u.denominator.toFloat / 2
+    val length1 = length.absoluteLength(unitDenominator) - u.value
+    val denom1 = u.value / 2
 
     if (length1 >= denom1) {
       val dot1 = EllipseElement(mkDotFrame(pitch, x))
@@ -361,7 +361,7 @@ class SingleLineScoreRenderer(
     val length = rest.length.absoluteLength(unitDenominator)
 
     var restElement: ScoreElementBase = null
-    var dots: Seq[EllipseElement] = null
+    var dots: Seq[EllipseElement] = Nil
 
     calcDenominator(length) match {
       case UnitDenominator.Whole =>
@@ -405,7 +405,7 @@ class SingleLineScoreRenderer(
         throw new RuntimeException("currently not supported")
     }
 
-    RestComponent(dots.toList, restElement, x)
+    RestComponent(dots, restElement, x)
   }
 
   private def mkNoteComponent(

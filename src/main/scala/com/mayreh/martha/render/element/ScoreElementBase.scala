@@ -15,5 +15,5 @@ trait ScoreElementBase {
 
 object ScoreElementBase {
 
-  final val defaultColor: Color = Color("aaa")
+  final val defaultColor: Color = Color.black
 }

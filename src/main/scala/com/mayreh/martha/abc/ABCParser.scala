@@ -209,17 +209,21 @@ class ABCParser {
   def buildTuneBody(elements: Seq[MusicalElement]): TuneBody = {
 
     val voiceIdElmentsMap = mu.LinkedHashMap.empty[String, mu.ListBuffer[MusicalElement]]
-    var currentVoiceid = "__defaultVoiceId"
-    voiceIdElmentsMap(currentVoiceid) = mu.ListBuffer.empty
+
+    // to parse song has no explicit voice header
+    val dummyVoiceId = "__defaultVoiceId"
+
+    var currentVoiceId = dummyVoiceId
+    voiceIdElmentsMap(currentVoiceId) = mu.ListBuffer.empty
 
     elements.foreach {
       case i: VoiceId =>
-        currentVoiceid = i.id
+        currentVoiceId = i.id
       case e =>
-        voiceIdElmentsMap.getOrElseUpdate(currentVoiceid, mu.ListBuffer.empty) += e
+        voiceIdElmentsMap.getOrElseUpdate(currentVoiceId, mu.ListBuffer.empty) += e
     }
 
-    voiceIdElmentsMap -= "__defaultVoiceId"
+    if (voiceIdElmentsMap.get(dummyVoiceId).isEmpty) { voiceIdElmentsMap -= dummyVoiceId }
 
     val voices = voiceIdElmentsMap.foldLeft(Vector.empty[Voice]) { case (acc, (id, elems)) =>
       acc :+ Voice(id, elems)
