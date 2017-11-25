@@ -24,4 +24,6 @@ case class SharpElement(frame: Rect, color: Color = ScoreElementBase.defaultColo
             d={ s"M 0 ${h/6*5 - hw/2} L ${w} ${h/3*2 - hw/2} L ${w} ${h/3*2 + hw/2} 0 ${h/6*5 + hw/2} Z" } />
     </g>
   }
+
+  def withFrame(frame: Rect): ScoreElementBase = this.copy(frame = frame)
 }

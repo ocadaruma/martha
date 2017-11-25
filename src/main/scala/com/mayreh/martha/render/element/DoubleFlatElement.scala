@@ -54,4 +54,6 @@ case class DoubleFlatElement(frame: Rect, color: Color = ScoreElementBase.defaul
 
     g
   }
+
+  def withFrame(frame: Rect): ScoreElementBase = this.copy(frame = frame)
 }

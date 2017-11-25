@@ -99,4 +99,6 @@ case class BracketElement(
 
     g
   }
+
+  def withFrame(frame: Rect): ScoreElementBase = this.copy(frame = frame)
 }

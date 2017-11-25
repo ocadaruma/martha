@@ -21,4 +21,6 @@ case class DoubleSharpElement(frame: Rect, color: Color = ScoreElementBase.defau
             d={ s"M 0 ${h - edgeWidth} L ${w - edgeWidth} 0 L ${w} ${edgeWidth} L ${edgeWidth} ${h} Z" } />
     </g>
   }
+
+  def withFrame(frame: Rect): ScoreElementBase = this.copy(frame = frame)
 }

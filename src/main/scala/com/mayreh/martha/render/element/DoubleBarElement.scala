@@ -13,4 +13,6 @@ case class DoubleBarElement(frame: Rect, color: Color = ScoreElementBase.default
       <rect x={s"${w*2}"} y="0" width={s"${w}"} height={s"${height}"} stroke="none" fill={color.hexRGB} />
     </g>
   }
+
+  def withFrame(frame: Rect): ScoreElementBase = this.copy(frame = frame)
 }

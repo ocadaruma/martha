@@ -17,4 +17,6 @@ case class BeamElement(
         <path d={ s"M 0 ${h - lineWidth} L ${w} 0 L ${w} ${lineWidth} L 0 ${h}" } stroke="none" fill={color.hexRGB} transform={s"translate(${frame.x}, ${frame.y})"} />
     }
   }
+
+  def withFrame(frame: Rect): ScoreElementBase = this.copy(frame = frame)
 }

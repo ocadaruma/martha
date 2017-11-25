@@ -37,34 +37,34 @@ class ABCParserTest extends FlatSpec {
       Seq(
         Space,
         SlurStart,
-        Note(NoteLength(2, 1), Pitch(PitchName.B, None, Octave(0))),
-        Note(NoteLength(2, 1), Pitch(PitchName.C, None, Octave(1))),
+        Note(NoteLength(2, 1), Pitch(PitchName.B, None, Octave(0)), Nil),
+        Note(NoteLength(2, 1), Pitch(PitchName.C, None, Octave(1)), Nil),
         Space,
-        Note(NoteLength(2, 1), Pitch(PitchName.D, None, Octave(1))),
-        Note(NoteLength(2, 1), Pitch(PitchName.G, None, Octave(1))),
+        Note(NoteLength(2, 1), Pitch(PitchName.D, None, Octave(1)), Nil),
+        Note(NoteLength(2, 1), Pitch(PitchName.G, None, Octave(1)), Nil),
         SlurEnd,
         Space,
-        BarLine,
+        BarLine(Nil),
         Space,
-        Note(NoteLength(6, 1), Pitch(PitchName.F, None, Octave(1))),
-        Note(NoteLength(2, 1), Pitch(PitchName.E, None, Octave(1))),
+        Note(NoteLength(6, 1), Pitch(PitchName.F, None, Octave(1)), Nil),
+        Note(NoteLength(2, 1), Pitch(PitchName.E, None, Octave(1)), Nil),
         Space,
-        BarLine,
+        BarLine(Nil),
         LineBreak,
         Space,
         SlurStart,
-        Note(NoteLength(2, 1), Pitch(PitchName.B, None, Octave(0))),
-        Note(NoteLength(2, 1), Pitch(PitchName.C, None, Octave(1))),
+        Note(NoteLength(2, 1), Pitch(PitchName.B, None, Octave(0)), Nil),
+        Note(NoteLength(2, 1), Pitch(PitchName.C, None, Octave(1)), Nil),
         Space,
-        Note(NoteLength(2, 1), Pitch(PitchName.D, None, Octave(1))),
-        Note(NoteLength(2, 1), Pitch(PitchName.G, None, Octave(1))),
+        Note(NoteLength(2, 1), Pitch(PitchName.D, None, Octave(1)), Nil),
+        Note(NoteLength(2, 1), Pitch(PitchName.G, None, Octave(1)), Nil),
         SlurEnd,
         Space,
-        BarLine,
+        BarLine(Nil),
         Space,
-        Note(NoteLength(8, 1), Pitch(PitchName.F, None, Octave(1))),
+        Note(NoteLength(8, 1), Pitch(PitchName.F, None, Octave(1)), Nil),
         Space,
-        BarLine,
+        BarLine(Nil),
         LineBreak,
       )
     )
@@ -76,35 +76,79 @@ class ABCParserTest extends FlatSpec {
       "B1",
       Seq(
         Space,
-        Rest(NoteLength(8, 1)),
+        Rest(NoteLength(8, 1), Nil),
         Space,
-        BarLine,
+        BarLine(Nil),
         Space,
-        Rest(NoteLength(2, 1)),
-        Rest(NoteLength(8, 1)),
-        Note(NoteLength(2, 1), Pitch(PitchName.F, None, Octave(1))),
+        Rest(NoteLength(2, 1), Nil),
+        Note(NoteLength(2, 1), Pitch(PitchName.F, None, Octave(1)), Nil),
         Space,
-        Note(NoteLength(2, 1), Pitch(PitchName.G, None, Octave(1))),
-        Note(NoteLength(2, 1), Pitch(PitchName.A, None, Octave(1))),
+        Note(NoteLength(2, 1), Pitch(PitchName.G, None, Octave(1)), Nil),
+        Note(NoteLength(2, 1), Pitch(PitchName.A, None, Octave(1)), Nil),
         Space,
-        BarLine,
+        BarLine(Nil),
         LineBreak,
         Space,
         SlurStart,
-        Note(NoteLength(2, 1), Pitch(PitchName.D, None, Octave(1))),
-        Note(NoteLength(2, 1), Pitch(PitchName.F, None, Octave(1))),
+        Note(NoteLength(2, 1), Pitch(PitchName.D, None, Octave(1)), Nil),
+        Note(NoteLength(2, 1), Pitch(PitchName.F, None, Octave(1)), Nil),
         Space,
-        Note(NoteLength(2, 1), Pitch(PitchName.B, None, Octave(1))),
-        Note(NoteLength(2, 1), Pitch(PitchName.E, None, Octave(2))),
+        Note(NoteLength(2, 1), Pitch(PitchName.B, None, Octave(1)), Nil),
+        Note(NoteLength(2, 1), Pitch(PitchName.E, None, Octave(2)), Nil),
         SlurEnd,
         Space,
-        BarLine,
+        BarLine(Nil),
         Space,
-        Note(NoteLength(8, 1), Pitch(PitchName.D, None, Octave(2))),
+        Note(NoteLength(8, 1), Pitch(PitchName.D, None, Octave(2)), Nil),
         Space,
-        BarLine,
+        BarLine(Nil),
         LineBreak,
       )
     )
+
+    assert(voice2 == expectedVoice2)
+  }
+
+  it should "parse annotation" in {
+
+    val song = scala.io.Source.fromInputStream(getClass.getClassLoader.getResourceAsStream("annotation.txt")).mkString
+
+    val result = parser.parse(song)
+
+    val tune = result.right.get
+
+    val header = tune.tuneHeader
+
+    val voice = tune.tuneBody.voices(0)
+
+    val expectedElements = Seq(
+      Note(NoteLength(4, 1), Pitch(PitchName.A, None, Octave(0)), Seq(
+        Annotation(AnnotationPlacement.Left, "left"),
+        Annotation(AnnotationPlacement.Right, "right"),
+        Annotation(AnnotationPlacement.Above, "above"),
+        Annotation(AnnotationPlacement.Below, "below"),
+        Annotation(AnnotationPlacement.Hidden, "hidden")
+      )),
+      Space,
+      BarLine(Nil),
+      LineBreak,
+      Chord(NoteLength(2, 1),
+        Seq(Pitch(PitchName.A, None, Octave(0)), Pitch(PitchName.C, None, Octave(1)), Pitch(PitchName.E, None, Octave(1))),
+        Seq(Annotation(AnnotationPlacement.Hidden, "chord"))
+      ),
+      Space,
+      Rest(NoteLength(2, 1),
+        Seq(Annotation(AnnotationPlacement.Hidden, "rest"))
+      ),
+      Space,
+      BarLine(Seq(Annotation(AnnotationPlacement.Hidden, "bar"))),
+      LineBreak,
+      Rest(NoteLength(4, 1), Nil),
+      Space,
+      DoubleBarLine(Seq(Annotation(AnnotationPlacement.Hidden, "double_bar"))),
+      LineBreak
+    )
+
+    assert(voice.elements == expectedElements)
   }
 }

@@ -27,4 +27,6 @@ case class FlatElement(frame: Rect, color: Color = ScoreElementBase.defaultColor
       transform={s"translate(${frame.x}, ${frame.y})"}
       />
   }
+
+  def withFrame(frame: Rect): ScoreElementBase = this.copy(frame = frame)
 }

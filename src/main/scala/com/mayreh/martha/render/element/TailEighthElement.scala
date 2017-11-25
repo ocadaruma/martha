@@ -19,4 +19,6 @@ case class TailEighthElement(frame: Rect, inverted: Boolean = false, color: Colo
       transform={if (inverted) s"translate(${frame.x}, ${frame.y + h}) scale(1, -1)" else s"translate(${frame.x}, ${frame.y}) scale(1, 1)"}
       />
   }
+
+  def withFrame(frame: Rect): ScoreElementBase = this.copy(frame = frame)
 }

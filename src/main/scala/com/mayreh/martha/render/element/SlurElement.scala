@@ -42,4 +42,6 @@ case class SlurElement(
       fill={color.hexRGB}
       />
   }
+
+  def withFrame(frame: Rect): ScoreElementBase = this.copy(frame = frame)
 }

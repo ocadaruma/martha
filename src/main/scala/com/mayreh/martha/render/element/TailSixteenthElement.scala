@@ -44,4 +44,6 @@ case class TailSixteenthElement(frame: Rect, inverted: Boolean = false, color: C
       </g>
     g
   }
+
+  def withFrame(frame: Rect): ScoreElementBase = this.copy(frame = frame)
 }

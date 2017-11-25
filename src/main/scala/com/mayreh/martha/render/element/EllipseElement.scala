@@ -9,4 +9,6 @@ case class EllipseElement(frame: Rect, color: Color = ScoreElementBase.defaultCo
 
       <ellipse cx={s"${w/2}"} cy={s"${h/2}"} rx={s"${w/2}"} ry={s"${h/2}"} stroke="none" fill={color.hexRGB} transform={s"translate(${frame.x}, ${frame.y})"} />
   }
+
+  def withFrame(frame: Rect): ScoreElementBase = this.copy(frame = frame)
 }

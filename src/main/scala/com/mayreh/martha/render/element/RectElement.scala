@@ -9,4 +9,6 @@ case class RectElement(frame: Rect, color: Color = ScoreElementBase.defaultColor
 
     <rect x="0" y="0" width={s"${w}"} height={s"${h}"} stroke="none" fill={color.hexRGB} transform={s"translate(${frame.x}, ${frame.y})"} />
   }
+
+  def withFrame(frame: Rect): ScoreElementBase = this.copy(frame = frame)
 }

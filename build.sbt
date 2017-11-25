@@ -8,5 +8,6 @@ libraryDependencies ++= Seq(
   "com.lihaoyi" %% "fastparse" % "1.0.0",
   "org.apache.xmlgraphics" % "batik-svggen" % "1.9.1",
   "org.scala-lang.modules" %% "scala-xml" % "1.0.6",
+  "com.typesafe.play" %% "play-json" % "2.6.7",
   "org.scalatest" %% "scalatest" % "3.0.4" % "test"
 )

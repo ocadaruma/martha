@@ -34,4 +34,6 @@ case class SymbolFourElement(frame: Rect, color: Color = ScoreElementBase.defaul
       transform={s"translate(${frame.x}, ${frame.y})"}
       />
   }
+
+  def withFrame(frame: Rect): ScoreElementBase = this.copy(frame = frame)
 }

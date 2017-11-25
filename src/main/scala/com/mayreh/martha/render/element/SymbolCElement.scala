@@ -32,4 +32,6 @@ case class SymbolCElement(frame: Rect, color: Color = ScoreElementBase.defaultCo
       transform={s"translate(${frame.x}, ${frame.y})"}
       />
   }
+
+  def withFrame(frame: Rect): ScoreElementBase = this.copy(frame = frame)
 }
