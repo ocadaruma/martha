@@ -1,10 +1,12 @@
 package com.mayreh.martha.render
 
+import java.io.{File, FileOutputStream, PrintWriter}
+
 import com.mayreh.martha.core.Metadata.VoiceHeader
 import com.mayreh.martha.core.NoSound._
 import com.mayreh.martha.core._
 import com.mayreh.martha.render.component.NoteComponent
-import com.mayreh.martha.render.element.{DoubleBarElement, RectElement}
+import com.mayreh.martha.render.element.{DoubleBarElement, RectElement, ScoreElementBase}
 import com.mayreh.martha.render.util.calcDenominator
 
 class SingleLineScore(
@@ -16,18 +18,55 @@ class SingleLineScore(
   private[this] val staffTop = (frame.height - layout.staffHeight) / 2
   private[this] val staffInterval = layout.staffHeight / (staffNum - 1)
 
-  private[this] val nodeBuffer = new scala.xml.NodeBuffer
+//  private[this] val nodeBuffer = new scala.xml.NodeBuffer
+  private[this] val elementBuffer = scala.collection.mutable.ListBuffer.empty[ScoreElementBase]
+
+  // TODO: remove mutability
+  private[this] var _voiceStart: Float = 0
+  def voiceStart: Float = _voiceStart
+  def elements: Seq[ScoreElementBase] = elementBuffer.toList
 
   def render(): scala.xml.Elem = {
-    drawStaff()
+    val width = frame.width
+    val top = staffTop
+    val w = layout.staffLineWidth / 2
+
+    val paths = (0 until staffNum).map { i =>
+      val offset = staffInterval * i
+
+      s"M 0 ${top + offset - w} L ${width} ${top + offset - w} L ${width} ${top + offset + w} L 0 ${top + offset + w} Z"
+    }.mkString(" ")
+
 
     <svg xmlns="http://www.w3.org/2000/svg" width={ frame.width.toString } height={ frame.height.toString } viewBox={ s"${frame.x} ${frame.y} ${frame.width} ${frame.height}" }>
-      { nodeBuffer.toList }
+
+      <!-- draw staff -->
+      <path fill="black" stroke="none" d={ paths } />
+
+      { elementBuffer.map(_.element).toList }
     </svg>
   }
 
+  def dumpNodes(dir: File): Unit = {
+    elementBuffer.zipWithIndex.foreach { case (elem, idx) =>
+      val writer = new PrintWriter(new FileOutputStream(new File(dir, f"element_${idx}%05d.svg"), false))
+      val svg =
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width={ elem.frame.width.toString }
+             height={ elem.frame.height.toString }
+             viewBox={ s"0 0 ${elem.frame.width} ${elem.frame.height}" }>
+          { elem.withFrame(elem.frame.copy(origin = Point(0, 0))).element }
+        </svg>
+      try {
+        writer.println(svg.mkString)
+      } finally {
+        writer.close()
+      }
+    }
+  }
+
   def loadVoice(tuneHeader: TuneHeader, voiceHeader: VoiceHeader, voice: Voice, initialOffset: Float = 0): Unit = {
-    nodeBuffer.clear()
+    elementBuffer.clear()
 
     val renderer = new SingleLineScoreRenderer(tuneHeader.unitNoteLength.denominator, layout, frame)
 
@@ -41,36 +80,39 @@ class SingleLineScore(
 
     // render clef
     val clef = renderer.mkClef(xOffset, voiceHeader.clef)
-    nodeBuffer += clef.element
+    elementBuffer += clef
     xOffset += clef.frame.width
 
     // render key signature
     val keySignature = renderer.mkKeySignature(xOffset, tuneHeader.key)
-    keySignature.foreach { k => nodeBuffer += k.element }
+    keySignature.foreach(elementBuffer += _)
     xOffset = keySignature.map(_.frame.maxX).max
 
     // render meter
     val meter = renderer.mkMeter(xOffset, tuneHeader.meter)
-    nodeBuffer += meter.element
+    elementBuffer += meter
     xOffset += meter.frame.width
+
+    // TODO: remove mutability
+    _voiceStart = xOffset
 
     // render voice
     for (element <- voice.elements) {
       beamContinues = false
 
       element match {
-        case BarLine =>
-          nodeBuffer += RectElement(Rect(
+        case BarLine(_) =>
+          elementBuffer += RectElement(Rect(
             xOffset - layout.barMarginRight,
             staffTop,
             layout.stemWidth,
-            layout.staffHeight)).element
-        case DoubleBarLine =>
-          nodeBuffer += DoubleBarElement(Rect(
+            layout.staffHeight))
+        case DoubleBarLine(_) =>
+          elementBuffer += DoubleBarElement(Rect(
             xOffset - layout.barMarginRight,
             staffTop,
             layout.stemWidth * 3,
-            layout.staffHeight)).element
+            layout.staffHeight))
         case Space =>
         case LineBreak =>
         case RepeatEnd =>
@@ -85,7 +127,7 @@ class SingleLineScore(
           calcDenominator(note.length.absoluteLength(renderer.unitDenominator)) match {
             case UnitDenominator.Whole | UnitDenominator.Half | UnitDenominator.Quarter =>
               val component = renderer.mkNoteComponent(xOffset, note)
-              nodeBuffer ++= component.elements.map(_.element)
+              elementBuffer ++= component.elements
               noteComponentMap(component.x) = component
             case _ =>
               elementsInBeam += ((xOffset, note))
@@ -97,7 +139,7 @@ class SingleLineScore(
           calcDenominator(chord.length.absoluteLength(renderer.unitDenominator)) match {
             case UnitDenominator.Whole | UnitDenominator.Half | UnitDenominator.Quarter =>
               val component = renderer.mkNoteComponent(xOffset, chord)
-              nodeBuffer ++= component.elements.map(_.element)
+              elementBuffer ++= component.elements
               noteComponentMap(component.x) = component
             case _ =>
               elementsInBeam += ((xOffset, chord))
@@ -108,7 +150,7 @@ class SingleLineScore(
 
         case rest: Rest =>
           val r = renderer.mkRestComponent(xOffset, rest)
-          nodeBuffer ++= r.elements.map(_.element)
+          elementBuffer ++= r.elements
           xOffset += renderer.renderedWidthForNoteLength(rest.length)
         case rest: MultiMeasureRest =>
           xOffset += renderer.renderedWidthForNoteLength(NoteLength(rest.numMeasures, 1))
@@ -117,7 +159,7 @@ class SingleLineScore(
 
       if (!beamContinues && elementsInBeam.nonEmpty) {
         for (beam <- renderer.mkBeamComponent(elementsInBeam.toList)) {
-          nodeBuffer ++= beam.elements.map(_.element)
+          elementBuffer ++= beam.elements
           for (component <- beam.toNoteComponents) { noteComponentMap(component.x) = component }
         }
         elementsInBeam.clear()
@@ -126,7 +168,7 @@ class SingleLineScore(
 
     if (elementsInBeam.nonEmpty) {
       for (beam <- renderer.mkBeamComponent(elementsInBeam)) {
-        nodeBuffer ++= beam.elements.map(_.element)
+        elementBuffer ++= beam.elements
         for (component <- beam.toNoteComponents) { noteComponentMap(component.x) = component }
       }
     }
@@ -138,22 +180,8 @@ class SingleLineScore(
         val start = noteComponentLocations.get(i - 1).flatMap(noteComponentMap.get)
         val end = noteComponentMap.get(x)
 
-        renderer.mkTie(start, end).foreach { nodeBuffer += _.element }
+        renderer.mkTie(start, end).foreach(elementBuffer += _)
       }
     }
-  }
-
-  private def drawStaff(): Unit = {
-    val width = frame.width
-    val top = staffTop
-    val w = layout.staffLineWidth / 2
-
-    val paths = (0 until staffNum).map { i =>
-      val offset = staffInterval * i
-
-      s"M 0 ${top + offset - w} L ${width} ${top + offset - w} L ${width} ${top + offset + w} L 0 ${top + offset + w} Z"
-    }.mkString(" ")
-
-    nodeBuffer += <path fill="black" stroke="none" d={ paths } />
   }
 }

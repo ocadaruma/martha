@@ -333,7 +333,7 @@ class SingleLineScoreRenderer(
     overrideStem: Option[RectElement],
     overrideTail: Option[ScoreElementBase]): NoteComponent = {
 
-    mkNoteComponent(x, Chord(note.length, Seq(note.pitch)), overrideInverted, autoStem, overrideStem, overrideTail)
+    mkNoteComponent(x, Chord(note.length, Seq(note.pitch), note.annotations), overrideInverted, autoStem, overrideStem, overrideTail)
   }
 
   private def mkStem(noteHeads: Seq[ScoreElementBase], inverted: Boolean, sparse: Boolean): RectElement = {
