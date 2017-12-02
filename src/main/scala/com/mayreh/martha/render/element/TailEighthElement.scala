@@ -1,8 +1,8 @@
 package com.mayreh.martha.render.element
 
-import com.mayreh.martha.render.{Rect, Size}
+import com.mayreh.martha.render.{Color, Rect, Size}
 
-case class TailEighthElement(frame: Rect, inverted: Boolean = false) extends ScoreElementBase {
+case class TailEighthElement(frame: Rect, inverted: Boolean = false, color: Color = ScoreElementBase.defaultColor) extends ScoreElementBase {
 
   val element: scala.xml.Elem = {
     val Size(w, h) = frame.size
@@ -14,9 +14,11 @@ case class TailEighthElement(frame: Rect, inverted: Boolean = false) extends Sco
             |L ${w * 0.6232} ${h * 1.0016567}
             |C ${w * 0.79895} ${h * 0.9308633}, ${w * 0.94747} ${h * 0.80686}, ${w * 0.91226} ${h * 0.69606}
             |C ${w * 0.87704} ${h * 0.5852567}, ${w * 0.85393} ${h * 0.45594665}, ${w * 0.0012} ${h * 0.36567333}""".stripMargin}
-      stroke="transparent"
-      fill="black"
+      stroke="none"
+      fill={color.hexRGB}
       transform={if (inverted) s"translate(${frame.x}, ${frame.y + h}) scale(1, -1)" else s"translate(${frame.x}, ${frame.y}) scale(1, 1)"}
       />
   }
+
+  def withFrame(frame: Rect): ScoreElementBase = this.copy(frame = frame)
 }

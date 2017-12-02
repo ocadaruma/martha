@@ -6,8 +6,8 @@ sealed trait TupletMember extends MusicalElement with HasLength
 sealed trait BeamMember extends MusicalElement with HasLength
 
 object NoSound {
-  case object BarLine extends MusicalElement
-  case object DoubleBarLine extends MusicalElement
+  case class BarLine(annotations: Seq[Annotation]) extends MusicalElement
+  case class DoubleBarLine(annotations: Seq[Annotation]) extends MusicalElement
   case object SlurStart extends MusicalElement
   case object SlurEnd extends MusicalElement
   case object RepeatStart extends MusicalElement
@@ -18,13 +18,13 @@ object NoSound {
   case object EOF extends MusicalElement
 }
 
-case class Note(length: NoteLength, pitch: Pitch) extends TupletMember with BeamMember
+case class Note(length: NoteLength, pitch: Pitch, annotations: Seq[Annotation]) extends TupletMember with BeamMember
 
-case class Rest(length: NoteLength) extends TupletMember with BeamMember
+case class Rest(length: NoteLength, annotations: Seq[Annotation]) extends TupletMember with BeamMember
 
 case class MultiMeasureRest(numMeasures: Int) extends MusicalElement
 
-case class Chord(length: NoteLength, pitches: Seq[Pitch]) extends TupletMember with BeamMember
+case class Chord(length: NoteLength, pitches: Seq[Pitch], annotations: Seq[Annotation]) extends TupletMember with BeamMember
 
 case class VoiceId(id: String) extends MusicalElement
 

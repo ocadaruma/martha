@@ -1,6 +1,9 @@
 package com.mayreh.martha.core
 
-sealed abstract class UnitDenominator(val denominator: Int)
+sealed abstract class UnitDenominator(val denominator: Int) {
+
+  def value: Float = 1f / denominator
+}
 
 object UnitDenominator {
   case object Whole extends UnitDenominator(1)

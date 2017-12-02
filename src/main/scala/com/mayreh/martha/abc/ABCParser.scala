@@ -75,13 +75,27 @@ class ABCParser {
     })
   }
 
-  val doubleBarLine = P("||").map[MusicalElement](_ => NoSound.DoubleBarLine)
+  val annotation = {
+    val placement = CharIn("^_<>@").!.map {
+      case "^" => AnnotationPlacement.Above
+      case "_" => AnnotationPlacement.Below
+      case "<" => AnnotationPlacement.Left
+      case ">" => AnnotationPlacement.Right
+      case "@" => AnnotationPlacement.Hidden
+    }
 
-  val repeatStart = P("|:").map[MusicalElement](_ => NoSound.DoubleBarLine)
+    ("\"" ~ placement ~ anyChar.filter(_ != "\"").rep.! ~ "\"").map { case (p, v) =>
+      Annotation(p, v)
+    }
+  }
 
-  val repeatEnd = P(":|").map[MusicalElement](_ => NoSound.DoubleBarLine)
+  val doubleBarLine = ((annotation ~ whitespace).rep ~ "||").map(NoSound.DoubleBarLine)
 
-  val barLine = P("|").map[MusicalElement](_ => NoSound.BarLine)
+  val repeatStart = P("|:").map[MusicalElement](_ => NoSound.RepeatStart)
+
+  val repeatEnd = P(":|").map[MusicalElement](_ => NoSound.RepeatEnd)
+
+  val barLine = ((annotation ~ whitespace).rep ~ "|").map(NoSound.BarLine)
 
   val slurStart = P("(").map[MusicalElement](_ => NoSound.SlurStart)
 
@@ -135,16 +149,16 @@ class ABCParser {
     }
   }
 
-  val note = (pitch ~ noteLength).map { case (p, l) =>
-    Note(l, p)
+  val note = ((annotation ~ whitespace).rep ~ pitch ~ noteLength).map { case (annots, p, l) =>
+    Note(l, p, annots)
   }
 
-  val rest = ("z" ~ noteLength).map(Rest)
+  val rest = ((annotation ~ whitespace).rep ~ "z" ~ noteLength).map { case (annots, l) => Rest(l, annots) }
 
   val multiMeasureRest = ("Z" ~ number.?).map { n => MultiMeasureRest(n.getOrElse(1)) }
 
-  val chord = ("[" ~ pitch.rep(1) ~ "]" ~ noteLength).map { case (pitches, length) =>
-    Chord(length, pitches)
+  val chord = ((annotation ~ whitespace).rep ~ "[" ~ pitch.rep(1) ~ "]" ~ noteLength).map { case (annots, pitches, length) =>
+    Chord(length, pitches, annots)
   }
 
   val tuplet = ("(" ~ CharIn('2' to '9').!).map(_.toInt).flatMap { n =>
@@ -209,17 +223,21 @@ class ABCParser {
   def buildTuneBody(elements: Seq[MusicalElement]): TuneBody = {
 
     val voiceIdElmentsMap = mu.LinkedHashMap.empty[String, mu.ListBuffer[MusicalElement]]
-    var currentVoiceid = "__defaultVoiceId"
-    voiceIdElmentsMap(currentVoiceid) = mu.ListBuffer.empty
+
+    // to parse song has no explicit voice header
+    val dummyVoiceId = "__defaultVoiceId"
+
+    var currentVoiceId = dummyVoiceId
+    voiceIdElmentsMap(currentVoiceId) = mu.ListBuffer.empty
 
     elements.foreach {
       case i: VoiceId =>
-        currentVoiceid = i.id
+        currentVoiceId = i.id
       case e =>
-        voiceIdElmentsMap.getOrElseUpdate(currentVoiceid, mu.ListBuffer.empty) += e
+        voiceIdElmentsMap.getOrElseUpdate(currentVoiceId, mu.ListBuffer.empty) += e
     }
 
-    voiceIdElmentsMap -= "__defaultVoiceId"
+    if (voiceIdElmentsMap.getOrElse(dummyVoiceId, Nil).isEmpty) { voiceIdElmentsMap -= dummyVoiceId }
 
     val voices = voiceIdElmentsMap.foldLeft(Vector.empty[Voice]) { case (acc, (id, elems)) =>
       acc :+ Voice(id, elems)
@@ -252,6 +270,6 @@ class ABCParser {
       parseLine(line)
     }
 
-    Right(Tune(buildTuneHeader(headers), buildTuneBody(elements)))
+    Right(Tune(buildTuneHeader(headers.toList), buildTuneBody(elements.toList)))
   }
 }

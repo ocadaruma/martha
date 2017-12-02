@@ -2,7 +2,7 @@ package com.mayreh.martha.render
 
 import com.mayreh.martha.core.Metadata.{Key, Meter}
 import com.mayreh.martha.core._
-import com.mayreh.martha.render.calc.LinearExpr
+import com.mayreh.martha.render.math.LinearExpr
 import com.mayreh.martha.render.component._
 import com.mayreh.martha.render.element._
 import com.mayreh.martha.render.util._
@@ -80,8 +80,8 @@ class SingleLineScoreRenderer(
 
   private def mkDots(pitch: Pitch, x: Float, length: NoteLength, u: UnitDenominator): Seq[EllipseElement] = {
     val result = scala.collection.mutable.ListBuffer.empty[EllipseElement]
-    val length1 = length.absoluteLength(u) - u.denominator
-    val denom1 = u.denominator.toFloat / 2
+    val length1 = length.absoluteLength(unitDenominator) - u.value
+    val denom1 = u.value / 2
 
     if (length1 >= denom1) {
       val dot1 = EllipseElement(mkDotFrame(pitch, x))
@@ -144,7 +144,7 @@ class SingleLineScoreRenderer(
 
   def mkMeter(x: Float, meter: Meter): ScoreElementBase = {
     SymbolCElement(Rect(
-      x + 6, // margin
+      x + (layout.unitScale * 6), // margin
       staffTop + layout.staffInterval,
       layout.meterSymbolWidth,
       layout.staffInterval * 2
@@ -189,7 +189,7 @@ class SingleLineScoreRenderer(
     }
 
     val result = mu.ListBuffer.empty[ScoreElementBase]
-    var localX = x + layout.staffInterval + 4 // margin
+    var localX = x + layout.staffInterval + (layout.unitScale * 4) // margin
     for (p <- pitches) {
       result += mkAccidental(p, localX).get
       localX += layout.staffInterval
@@ -213,10 +213,14 @@ class SingleLineScoreRenderer(
 
         Some(
           SlurElement(
-          LocalPoint(Point(startX, startY)),
-          LocalPoint(Point(endX, endY)),
-          inverted)
-        )
+            Rect(
+              noteHeadFramesAtStart.map(_.minX).min,
+              0,
+              noteHeadFramesAtEnd.map(_.maxX).max - noteHeadFramesAtStart.map(_.minX).min,
+              bounds.height),
+            LocalPoint(Point(startX, startY)),
+            LocalPoint(Point(endX, endY)),
+            inverted))
       case _ =>
         None
     }
@@ -329,7 +333,7 @@ class SingleLineScoreRenderer(
     overrideStem: Option[RectElement],
     overrideTail: Option[ScoreElementBase]): NoteComponent = {
 
-    mkNoteComponent(x, Chord(note.length, Seq(note.pitch)), overrideInverted, autoStem, overrideStem, overrideTail)
+    mkNoteComponent(x, Chord(note.length, Seq(note.pitch), note.annotations), overrideInverted, autoStem, overrideStem, overrideTail)
   }
 
   private def mkStem(noteHeads: Seq[ScoreElementBase], inverted: Boolean, sparse: Boolean): RectElement = {
@@ -357,7 +361,7 @@ class SingleLineScoreRenderer(
     val length = rest.length.absoluteLength(unitDenominator)
 
     var restElement: ScoreElementBase = null
-    var dots: Seq[EllipseElement] = null
+    var dots: Seq[EllipseElement] = Nil
 
     calcDenominator(length) match {
       case UnitDenominator.Whole =>
@@ -401,7 +405,7 @@ class SingleLineScoreRenderer(
         throw new RuntimeException("currently not supported")
     }
 
-    RestComponent(dots.toList, restElement, x)
+    RestComponent(dots, restElement, x)
   }
 
   private def mkNoteComponent(
