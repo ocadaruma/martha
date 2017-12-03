@@ -352,7 +352,7 @@ class SingleLineScoreRenderer(
       RectElement(Rect(x, y, layout.stemWidth, stemBottom - y))
     } else {
       val y = Seq(lowerBound - stemHeight, topFrame.y - stemHeight).min
-      RectElement(Rect(x - layout.stemWidth, y, layout.stemWidth, topFrame.y - y + bottomFrame.height * 0.4f))
+      RectElement(Rect(x - layout.stemWidth, y, layout.stemWidth, bottomFrame.y - y + bottomFrame.height * 0.4f))
     }
   }
 
@@ -501,10 +501,12 @@ class SingleLineScoreRenderer(
     val (x1, y1) = (firstPoint.x, f(firstPoint.x))
     val (x2, y2) = (lastPoint.x, f(lastPoint.x))
 
+    val y = if (inverted) Seq(y1, y2).max else Seq(y1, y2).min
+
     val height = Seq(y2 - y1, layout.tupletFontSize).max
     BracketElement(Rect(
       x1,
-      if (inverted) y1 else y1 - height,
+      if (inverted) y else y - height,
       x2 - x1,
       height
     ), inverted = inverted, notes = numNotes, fontSize = layout.tupletFontSize, rightDown = y2 > y1)
@@ -535,7 +537,7 @@ class SingleLineScoreRenderer(
           val (offsetAtLowest, lowestElement) = group.minBy { case (_, element) => element.minPitch.step }
 
           val highestFrame = mkNoteHeadFrame(highestElement.maxPitch, offsetAtHighest)
-          val lowestFrame = mkNoteHeadFrame(lowestElement.maxPitch, offsetAtLowest)
+          val lowestFrame = mkNoteHeadFrame(lowestElement.minPitch, offsetAtLowest)
 
           val ((firstX, first), (lastX, last)) = (group.head, group.last)
           val lowestFrameInFirst = mkNoteHeadFrame(first.minPitch, firstX)
@@ -731,7 +733,7 @@ class SingleLineScoreRenderer(
             case _ =>
           }
 
-          offset = renderedWidthForNoteLength(e.length) * ratio
+          offset += renderedWidthForNoteLength(e.length) * ratio
           if (!beamContinues) {
             for (b <- mkBeamComponent(elements, tuplet.notes)) {
               beamComponents += ((elements.head._1, Left(b)))

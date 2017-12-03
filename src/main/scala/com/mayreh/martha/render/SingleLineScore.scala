@@ -65,7 +65,7 @@ class SingleLineScore(
     }
   }
 
-  def loadVoice(tuneHeader: TuneHeader, voiceHeader: VoiceHeader, voice: Voice, initialOffset: Float = 0): Unit = {
+  def loadVoice(tuneHeader: TuneHeader, voice: Voice, initialOffset: Float = 0): Unit = {
     elementBuffer.clear()
 
     val renderer = new SingleLineScoreRenderer(tuneHeader.unitNoteLength.denominator, layout, frame)
@@ -79,7 +79,7 @@ class SingleLineScore(
     var beamContinues = false
 
     // render clef
-    val clef = renderer.mkClef(xOffset, voiceHeader.clef)
+    val clef = renderer.mkClef(xOffset, Clef.Treble)
     elementBuffer += clef
     xOffset += clef.frame.width
 
@@ -147,7 +147,12 @@ class SingleLineScore(
           }
 
           xOffset += renderer.renderedWidthForNoteLength(chord.length)
+        case tuplet: Tuplet =>
+          val component = renderer.mkTupletComponent(tuplet, xOffset)
+          elementBuffer ++= component.elements
+          component.toNoteComponents.foreach(c => noteComponentMap(c.x) = c)
 
+          xOffset += tuplet.elements.map(e => renderer.renderedWidthForNoteLength(e.length) * tuplet.ratio).sum
         case rest: Rest =>
           val r = renderer.mkRestComponent(xOffset, rest)
           elementBuffer ++= r.elements
