@@ -8,10 +8,13 @@ case class DoubleBarElement(frame: Rect, color: Color = ScoreElementBase.default
     val Size(width, height) = frame.size
     val w = width / 3
 
-    <g transform={s"translate(${frame.x}, ${frame.y})"}>
-      <rect x="0" y="0" width={s"${w}"} height={s"${height}"} stroke="none" fill={color.hexRGB} />
-      <rect x={s"${w*2}"} y="0" width={s"${w}"} height={s"${height}"} stroke="none" fill={color.hexRGB} />
-    </g>
+      <path
+      stroke="none"
+      fill={color.hexRGB}
+      d={ s"""M 0 0 L 0 ${height} L ${w} ${height} L ${w} 0 z
+             |M ${w*2} 0 L ${w*2} ${height} L ${width} ${height} L ${width} 0 z""".stripMargin }
+      transform={s"translate(${frame.x}, ${frame.y})"}
+      />
   }
 
   def withFrame(frame: Rect): ScoreElementBase = this.copy(frame = frame)

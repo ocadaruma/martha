@@ -10,19 +10,15 @@ case class SharpElement(frame: Rect, color: Color = ScoreElementBase.defaultColo
     val vw = w/10 // vertical line width
     val hw = w/5 // horizontal line width
 
-    <g transform={s"translate(${frame.x}, ${frame.y})"}>
-      <path fill={color.hexRGB} stroke="none"
-            d={ s"M ${w/4 - vw/2} 0 L ${w/4 + vw/2} 0 L ${w/4 + vw/2} ${h} L ${w/4 - vw/2} ${h} Z" } />
-
-      <path fill={color.hexRGB} stroke="none"
-            d={ s"M ${w/4*3 - vw/2} 0 L ${w/4*3 + vw/2} 0 L ${w/4*3 + vw/2} ${h} L ${w/4*3 - vw/2} ${h} Z" } />
-
-      <path fill={color.hexRGB} stroke="none"
-            d={ s"M 0 ${h/3 - hw/2} L ${w} ${h/6 - hw/2} L ${w} ${h/6 + hw/2} L 0 ${h/3 + hw/2} Z" } />
-
-      <path fill={color.hexRGB} stroke="none"
-            d={ s"M 0 ${h/6*5 - hw/2} L ${w} ${h/3*2 - hw/2} L ${w} ${h/3*2 + hw/2} 0 ${h/6*5 + hw/2} Z" } />
-    </g>
+      <path
+      d={ s"""M ${w/4 - vw/2} 0 L ${w/4 + vw/2} 0 L ${w/4 + vw/2} ${h} L ${w/4 - vw/2} ${h} Z
+             |M ${w/4*3 - vw/2} 0 L ${w/4*3 + vw/2} 0 L ${w/4*3 + vw/2} ${h} L ${w/4*3 - vw/2} ${h} Z
+             |M 0 ${h/3 - hw/2} L ${w} ${h/6 - hw/2} L ${w} ${h/6 + hw/2} L 0 ${h/3 + hw/2} Z
+             |M 0 ${h/6*5 - hw/2} L ${w} ${h/3*2 - hw/2} L ${w} ${h/3*2 + hw/2} 0 ${h/6*5 + hw/2} Z""".stripMargin }
+      stroke="none"
+      fill={color.hexRGB}
+      transform={s"translate(${frame.x}, ${frame.y})"}
+      />
   }
 
   def withFrame(frame: Rect): ScoreElementBase = this.copy(frame = frame)
